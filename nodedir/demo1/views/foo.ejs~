@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+		<h1><% =title %></h1>
+		<p>Your name is:<% =name %></p>
+	</body>
+</html>

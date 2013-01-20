@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'/>
+		<link rel='stylesheet'type='text/css' href='css/clientWs.css'/>
+		<script type='text/javascript' src='js/jquery.js'></script>
+	</head>
+	<body>
+		<h1>这TM就是个聊天室！！！！</h1>
+		<div id='display'>
+			<div class='item'>
+				<span class='name'></span>
+				<span class='content'></span>
+			</div>
+		</div>
+	</body>
+	<script type='text/javascript' src='/js/clientWs.js'></script>
+</html>
