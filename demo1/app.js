@@ -28,6 +28,7 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });*/
 
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
@@ -73,6 +74,10 @@ app.use(function(req, res, next) {
 	next(); // 进行下个响应操作
 });
 
+app.use(express.bodyParser({
+	keepExtensions: true, // 上传文件是否保留后缀名
+	uploadDir: __dirname + '/public'  // 上传文件存储文件夹
+})); // 解释请求体，例如post的请求体，可以用req.body.xxx来访问，经过测试只能用post
 app.use(express.logger()); // 使用express自带的logger
 app.use(express.static(__dirname + '/public')); // 使用静态文件存储
 app.use(express.static(__dirname + '/views'));
@@ -139,5 +144,61 @@ app.locals({
 		name : req.params.name
 	});
 });*/
+
+///////////////////////////////////////////////////////////////////////
+/*
+ * 6. 存储路由信息的变量
+ * 	app.routes
+ * */
+
+// console.dir(app.routes);
+
+///////////////////////////////////////////////////////////////////////
+/*
+ * 7. req的属性
+ */
+
+app.get('/req/:arg', function(req, res) {
+	res.send(
+		req.params.arg +   // 调出参数: req.params.xxx
+		req.query.who 	   // 调出query string: req.query.xxx
+	);
+	console.log(req.route) // 当前路由信息	
+	/*
+	   req.route
+	   {
+	   		path: '/req/:arg',
+			method: 'get',
+			callbacks: [[functions]],
+			keys: [{name:'arg', options:false}],
+			regexp: /fjldajfla/,
+			params: [arg : 'fuck']
+	   }
+	*/
+});
+
+/*文件上传: req.files.xxx*/
+/*
+ * 可以通过req.files.xxx.name来获取已有文件名
+ * 可以通过req.files.xxx.path来获取文件
+ * 可以在bodyParser({
+ 		keepExtensions: true,  // 保留后缀名
+		uploadDir: '/xx/' 	   // 设置上传文件的文件夹	
+ *	});
+ * */
+app.post('/body', function(req, res) {
+	var path = req.files.pic.path; // 获取文件临时名，记住是名
+	var name = req.files.pic.name; // 获取文件名
+
+	// 重命名文件
+	fs.rename(path, __dirname + '/public/' + name, function(err) {
+		if(err) {
+			res.send('file error');
+		}
+	});
+
+	res.send(req.body.password);   // post请求，要用中间件express.bodyParser()来进行解释请求体，才可用req.body
+	//fs.rename(path, path + '/' + name);
+});
 
 app.listen(3000);
