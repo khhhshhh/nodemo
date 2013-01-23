@@ -28,6 +28,7 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });*/
 
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
@@ -73,7 +74,13 @@ app.use(function(req, res, next) {
 	next(); // 进行下个响应操作
 });
 
+app.use(express.bodyParser({
+	keepExtensions: true, // 上传文件是否保留后缀名
+	uploadDir: __dirname + '/public'  // 上传文件存储文件夹
+})); // 解释请求体，例如post的请求体，可以用req.body.xxx来访问，经过测试只能用post
+
 app.use(express.logger()); // 使用express自带的logger
+app.use(express.cookieParser()); // 使用cookie解析体，解析cookie
 app.use(express.static(__dirname + '/public')); // 使用静态文件存储
 app.use(express.static(__dirname + '/views'));
 app.use(app.router);
@@ -93,6 +100,17 @@ app.use(app.router);
  *
  * 当一个请求中使用了res.send，那么以后出现的send将不再有效
  * */
+
+app.all('*', function(req, res, next){ // 设置全局cookie
+	res.cookie('name', 'fuck', {
+		maxAge: 900000, // == expires: new Date(Date.now() + 900000)
+		httpOnly: true,
+	//	domain: 'localost'
+	//	path: '/fook'
+	});
+	next();
+});
+
 app.all('/fuck/:fuck', function(req, res, next) {
 	console.log('fuck<br/>fuck');
 	next();
@@ -139,5 +157,94 @@ app.locals({
 		name : req.params.name
 	});
 });*/
+
+///////////////////////////////////////////////////////////////////////
+/*
+ * 6. 存储路由信息的变量
+ * 	app.routes
+ * */
+
+// console.dir(app.routes);
+
+///////////////////////////////////////////////////////////////////////
+/*
+ * 7. req的属性
+ */
+
+app.get('/req/:arg', function(req, res) {
+	res.send(
+		req.params.arg +   // 调出参数: req.params.xxx
+		req.query.who 	   // 调出query string: req.query.xxx
+	);
+	console.log(req.route) // 当前路由信息	
+	/*
+	   req.route
+	   {
+	   		path: '/req/:arg',
+			method: 'get',
+			callbacks: [[functions]],
+			keys: [{name:'arg', options:false}],
+			regexp: /fjldajfla/,
+			params: [arg : 'fuck']
+	   }
+	*/
+});
+
+/*文件上传: req.files.xxx*/
+/*
+ * 可以通过req.files.xxx.name来获取已有文件名
+ * 可以通过req.files.xxx.path来获取文件
+ * 可以在bodyParser({
+ 		keepExtensions: true,  // 保留后缀名
+		uploadDir: '/xx/' 	   // 设置上传文件的文件夹	
+ *	});
+ * */
+app.post('/body', function(req, res) {
+	var path = req.files.pic.path; // 获取文件临时名，记住是名
+	var name = req.files.pic.name; // 获取文件名
+
+	// 重命名文件
+	fs.rename(path, __dirname + '/public/' + name, function(err) {
+		if(err) {
+			res.send('file error');
+		}
+	});
+
+	res.send(req.body.password);   // post请求，要用中间件express.bodyParser()来进行解释请求体，才可用req.body
+	//fs.rename(path, path + '/' + name);
+});
+
+/*
+ * 读取cookie设置：
+ * req.cookies.xxx
+ *
+ * 需要使用中间件来解析cookie
+ * app.use(express.cookieParser());
+ *
+ * 这里我在
+ * app.all('*', function(req, res, next){});
+ * 设置全局cookie，但是不知道为什么在本请求中设置cookie就不行了
+ * */
+
+function br(){
+	return '<br/>';
+}
+app.get('/cookie', function(req, res) { 
+	res.send(
+		'You cookie-name : ' + req.cookies.name + br() + 
+		req.accepts('json')  + br () +		// 有什么用？
+		req.is('json')  + br() +			// 判断是否某个类型
+		req.is('*/*') +  br() + 			// 判断是否某个类型,why it doesn't work????
+		req.get('Content-Type') + br() +	// 获取内容,why it doesn't work???
+		req.ip + br() +						// 获取IP吧
+		req.ips + br() +					// 代理ip也获取了
+		req.path + br() +					// 获取请求路径
+		req.host + br() +  					// 获取求情主机域名
+		req.xhr + br() +  					// 判断是否ajax请求
+		req.protocol + br() +				// 获取协议头部:http
+		req.originalUrl + br() +  			// 保留原始的url，当重写req.url的时候，就仍然可以保留最原始的那个了
+		req.url + br()						// url，可重写当路由 
+	);
+});
 
 app.listen(3000);
