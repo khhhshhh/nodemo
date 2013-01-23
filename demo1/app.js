@@ -217,7 +217,6 @@ app.post('/body', function(req, res) {
 	//fs.rename(path, path + '/' + name);
 });
 
-<<<<<<< HEAD
 /*
  * 读取cookie设置：
  * req.cookies.xxx
@@ -251,6 +250,4 @@ app.get('/cookie', function(req, res) {
 	);
 });
 
-=======
->>>>>>> c94f826f3e5645d81e7df67b2f5686b01ad0aac2
 app.listen(3000);
