@@ -24,5 +24,11 @@ app.configure(function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/foo', routes.foo);
+app.get('/block', function(req, res){
+	res.render('block', {
+		name: 'khhhshhh',
+		password: 'fuck'
+	});
+});
 
 app.listen(app.get('port'));

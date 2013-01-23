@@ -3,6 +3,7 @@ head
   title yes~! it's.  
   script(type='text/javascript')
     console.log('fuck');
+  meta(charset='utf-8')
 body
 
   // 使用缩进来表示父子节点
@@ -87,3 +88,20 @@ body
   for item in arr
     li.item= item
     li.item your item is #{item}
+
+  // jade模板化，extend & block 
+
+  // 模板中定义 
+  //        block 块名
+  // 模块中    
+  //        extends 模板名  
+  //        block 块名      
+  //            块内容          
+  // res.render到模块名中即可
+  #block
+      block content
+      block jade
+
+  // 包含另外一个块的内容 include ./inclu.jade(后缀名可有可无) 
+  div#include    
+      include ./inclu
