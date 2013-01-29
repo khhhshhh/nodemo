@@ -1,0 +1,23 @@
+.input-group {
+	height:50px;
+}
+.input-group label { 
+	display:inline-block;
+	text-align:right;
+	width:90px;
+	padding-right:10px;
+	font-size:18px;
+	font-weight:lighter;
+	color:#888;
+}
+.input-group input.radius {
+	height:25px;
+	padding:2px 5px;
+	width:200px;
+}
+.input-group button {
+	float:right;
+	margin-right:190px;
+	width:80px;
+	height:35px;
+}

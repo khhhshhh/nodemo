@@ -1,5 +1,34 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype 5
+html
+    head
+        script(type='text/javascript', src='/js/jquery.js')
+        link(type='text/css', rel='stylesheet', href='/css/structure.css');
+        link(type='text/css', rel='stylesheet', href='/css/style.css');
+        link(type='text/css', rel='stylesheet', href='/css/form.css');
+    body
+        div#wrapper
+            div#left
+                h1 Jhat 
+                div#sub.gray Easy to chat with you. 
+                ul#users 
+                    -users.forEach(function(user) {
+                    li.user: = JSON.stringify(user)
+                        button(_id='#{user._id}').delete delete 
+                    -});
+            div#right
+                form#form(method='POST', action='/create') 
+                    div.input-group
+                        label Name: 
+                        input.radius(type='text', name='name')
+                    div.input-group
+                        label Password: 
+                        input.radius(type='password', name='password')
+                    div.input-group
+                        label Verify: 
+                        input.radius(type='password', name='password')
+                    div.input-group
+                        label Email: 
+                        input.radius(type='email', name='email')
+                    div.input-group
+                        button#submit(type='submit') 提交
+    script(type='text/javascript', src='/js/mongoose.js');
