@@ -1,15 +1,31 @@
+var User = require('../models/user');
 
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
-};
-
-exports.signUp = function(req, res) {
-	/*Model: C.create({}, function(err, doc){});*/
-	User.create(req.body, function(err, user) {
-		res.json(user.toObject());
+exports.index = function(req, res) {
+	var u = req.session.user || null;
+	res.render('index', {
+		user: u
 	});
 };
+
+exports.layout = function(req, res) {
+	res.render('layout');
+};
+
+exports.signup = function(req, res) {
+	User.find({}, function(err, us) {
+		res.render('signup', {
+			users: us
+		});
+	});
+};
+
+exports.signin = function(req, res) {
+	res.render('signin');
+};
+
+exports.signout = function(req, res) {
+	req.session.user = null;
+	res.render('index', {
+		user: null
+	});
+}

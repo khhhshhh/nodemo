@@ -1,86 +1,53 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
+  , MongoStore = require('connect-mongo')(express)
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
   , mongoose = require('mongoose')
+  , User = require('./models/user')
   , path = require('path');
 
 var app = express();
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
+
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  
   app.use(express.favicon());
   app.use(express.logger('dev'));
+
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.cookieParser());
+
+  app.use(express.session({
+	  secret: 'jChat',
+	  store: new MongoStore({
+		  db: 'jChat'
+	  })
+  }));
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+
 });
 
-mongoose.connect('mongodb://localhost:27017/jay');
-var db = mongoose.connection;
-db.on('open', function() {
-	console.log('conncet to db');
-});
+app.get('/', routes.index);
 
-var user = mongoose.Schema({
-	age: Number
-	, name: String
-	, profile: String
-	, gender: String
-	, password: String
-	, email: String
-	, friends: Array
-});
+app.get('/layout', routes.layout);
 
-/*Virtual: 虚拟属性*/
-user.virtual('something').get(function(){
-	return this.age + this.name;
-});
+app.get('/signup', routes.signup);
 
-/*methods: 实例方法*/
-user.methods.say = function() {
-	return this.name;
-};
+app.get('/signin', routes.signin);
 
-/*statics: 类方法*/
-user.statics.findByName = function(n) {
-	return User.find({name: n});
-}
+app.post('/signin', user.signin);
 
-var User = mongoose.model('User', user);
+app.get('/signout', routes.signout);
 
-app.get('/', function(req, res) {
-	/*Model: C.find({})*/
-	User.find({}, function(err, us) {
-		res.render('index', {
-			users: us
-		});
-	});
-});
+app.post('/userCreate', user.create);
 
-app.post('/create', function(req, res) {
-	/*Model: C.create({}, function(err, doc){});*/
-	User.create(req.body, function(err, user) {
-		res.json(user.toObject());
-	});
-});
-
-app.post('/remove', function(req, res) {
-	User.findByIdAndRemove(req.body._id, function(err, what){
-		if(err) res.send(err);
-		else {
-			res.send('ok');
-		}
-	});
-});
+app.post('/userRemove', user.remove);
 
 
 /*Documents*/

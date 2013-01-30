@@ -7,28 +7,13 @@ html
         link(type='text/css', rel='stylesheet', href='/css/form.css');
     body
         div#wrapper
-            div#left
-                h1 Jhat 
-                div#sub.gray Easy to chat with you. 
-                ul#users 
-                    -users.forEach(function(user) {
-                    li.user: = JSON.stringify(user)
-                        button(_id='#{user._id}').delete delete 
-                    -});
-            div#right
-                form#form(method='POST', action='/create') 
-                    div.input-group
-                        label Name: 
-                        input.radius(type='text', name='name')
-                    div.input-group
-                        label Password: 
-                        input.radius(type='password', name='password')
-                    div.input-group
-                        label Verify: 
-                        input.radius(type='password', name='password')
-                    div.input-group
-                        label Email: 
-                        input.radius(type='email', name='email')
-                    div.input-group
-                        button#submit(type='submit') 提交
+            h1 Jhat 
+            div#sub.gray Easy to chat with you. 
+            div#nav
+                if user 
+                    ul#nav
+                        li: a(href='/profile') #{user.name}
+                        li: a(href='/signout') Signout
+                else 
+                    | Please <a href='/signin'>Signin</a> first.
     script(type='text/javascript', src='/js/mongoose.js');

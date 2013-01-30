@@ -8,7 +8,7 @@
 		var $that = $(this);
 		$.ajax({
 			type: 'POST'
-			, url: '/remove'
+			, url: '/userRemove'
 			, data: '_id=' + _id
 			, success: function(data) {
 				if(data == 'ok') {
@@ -28,7 +28,7 @@
 		event.preventDefault();
 		$.ajax({
 			type: 'POST'
-			, url: '/create'
+			, url: '/userCreate'
 			, data: $form.serialize()
 			, success: function(data) {
 				var $li = $('<li class="user"><button class="delete">delete</button></li>');
