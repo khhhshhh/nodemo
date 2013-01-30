@@ -6,7 +6,7 @@
 	font-size:16px;
 }
 
-#nav h1 a {
+#nav h1 a.head {
 	font-size:45px;
 	line-height:80px;
 	text-decoration:none;
@@ -20,6 +20,19 @@
 }
 .slide li {
 	cursor:pointer;
+	border-top:none;
+	height:24px;
+	line-height:24px;
+}
+.slide li a {
+	font-size:14px;
+}
+
+.slide li.first {
+	margin-top:1px;
+}
+.slide li.last {
+	border-radius:0 0 4px 4px;
 }
 
 .gray {

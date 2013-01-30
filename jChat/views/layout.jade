@@ -7,11 +7,12 @@ html
   body
       div#nav
           h1 
-            a(href='/') JHat
+            a.head(href='/') Jhat
             span.gray Easy to chat with you
-            ul.slide
-                li.item khhhshhh
-                li.fashion khhhshhh
+            ul.slide.radius
+                li.item: a khhhshhh
+                li.fashion.first: a(href='/profile') Profile
+                li.fashion.last: a(href='/signout') Signout
       div#wrapper.radius  
       div#footer  
          | Author: @
