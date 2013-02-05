@@ -35,4 +35,52 @@ exports.signin = function(req, res) {
 	});
 };
 
+exports.profileUpdate = function(req, res) {
+	if(req.session.user) {
+		var body = req.body;
+		var user = req.session.user;
+
+		User.findByIdAndUpdate(user._id, {
+			name: body.name
+			,nickname: body.nickname
+			,email: body.email
+			,gender: body.gender
+			,age: body.age
+			,profile: body.profile
+		}, function(err, newUser){
+			console.dir(err);
+			console.dir(newUser);
+			if(err) res.send('Error');
+			else {
+				req.session.user = newUser; 
+				res.redirect('/profile');
+			}
+		});
+	} else {
+		res.redirect('/signin');
+	}
+
+};
+
+exports.passwordUpdate = function(req, res) {
+	var opsw = md5(req.body.opassword);
+	var user = req.session.user;
+
+	if(opsw !== user.password) {
+		res.send('Old password is not correct');
+	} else {
+		var npsw = md5(req.body.npassword);
+		User.findByIdAndUpdate(user._id, {
+			password: npsw
+		}, function(err, newUser){
+			if(err) res.send('Update failed');
+			else {
+				req.session.user = newUser;
+				res.send('Update successfully');
+			}
+		});
+	}
+
+};
+
 exports.md5 = md5;

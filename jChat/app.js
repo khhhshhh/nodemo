@@ -39,6 +39,12 @@ app.get('/layout', routes.layout);
 
 app.get('/signup', routes.signup);
 
+app.get('/profile', routes.profile);
+
+app.get('/profileUpdate', routes.profileUpdate);
+
+app.post('/profileUpdate', user.profileUpdate);
+
 app.get('/signin', routes.signin);
 
 app.post('/signin', user.signin);
@@ -49,47 +55,11 @@ app.post('/userCreate', user.create);
 
 app.post('/userRemove', user.remove);
 
+app.get('/passwordUpdate', routes.passwordUpdate);
 
-/*Documents*/
-app.get('/findById/:id', function(req, res) {
-	/*Doc: findById(id, function(err, doc){})*/
+app.post('/passwordUpdate', user.passwordUpdate);
 
-	User.findById(req.params.id, function(err, user) {
-		if(err) res.send('Not found');
-		else {
-			res.json(user.toJSON());
-		}
-	});
-});
-
-app.get('/update/:name/:newName', function(req, res) {
-	/*Doc: update({contitions}, {update}, {options:[upsert, safe, multi], callback(err, count)})*/
-
-	User.update(
-		{name: req.params.name}
-		, {$set:{name:req.params.newName}}
-		, {safe: true, upsert: false, multi: true} 
-		, function(err, count) {
-			if(err) res.send('Not found');
-			else {
-				res.json(count);
-			}
-		});
-});
-
-app.get('/findByIdAndUpdate/:id/:name', function(req, res) {
-	/*Doc: findByIdAndUpdate(id, {update}, function(err, user){})*/
-
-	User.findByIdAndUpdate(
-		req.params.id
-		, {$set: {name: req.params.name}}
-		, function(err, user){
-			if(err) res.send('Not found');
-			else {
-				res.json(user.toJSON());
-			}
-		});
-});
+app.get('/friendSeeking', routes.friendSeeking);
 
 /*Query: MongoDB中的限制操作都可以用函数表示~！！！
  * C.find({}).where('age').gt(18)

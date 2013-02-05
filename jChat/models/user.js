@@ -16,6 +16,7 @@ db.on('error', function() {
 var user = Schema({
 	age: Number
 	, name: String
+	, nickname: String
 	, profile: String
 	, gender: String
 	, password: String
