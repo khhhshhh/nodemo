@@ -4,9 +4,9 @@ block head
 
 block content
     ul
-    -users.forEach(function(user) {
+    -friends.forEach(function(friend) {
         li=user 
-            button.add(value=user._id) add friend
+            button.add(value=friend._id) remove friend
             br
             br
     -});

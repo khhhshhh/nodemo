@@ -49,11 +49,29 @@ exports.passwordUpdate = function(req, res) {
 };
 
 exports.friendSeeking = function(req, res) {
-	User.find({_id:{$ne: req.session.user._id}}) // find all the users the not himself
-		.exec(function(err, users) { 
-			res.render('friendSeeking', {
-				user: req.session.user,
-				users: users || err
-			});
+	var user = req.session.user;
+	User.find({ // find all the users that not himself
+		_id: {$ne: user._id},
+		/*This is a confusing problem,
+		 * */
+		//friends: {$eleMatch: {$nin: user.friends}}
+	}).exec(function(err, users) { 
+		res.render('friendSeeking', {
+			user: user,
+			users: users || err
 		});
+	});
 };
+
+exports.friendsList = function(req, res) {
+	var user = req.session.user;
+	User.find({_id: {$in: user.friends}}, function(err, friends) {
+		if(err) res.send(err);
+		else {
+			res.render('friendsList', {
+				friends: friends,
+				user: user
+			});
+		}
+	});
+}; 

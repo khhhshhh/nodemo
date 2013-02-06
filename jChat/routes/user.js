@@ -48,8 +48,6 @@ exports.profileUpdate = function(req, res) {
 			,age: body.age
 			,profile: body.profile
 		}, function(err, newUser){
-			console.dir(err);
-			console.dir(newUser);
 			if(err) res.send('Error');
 			else {
 				req.session.user = newUser; 
@@ -83,4 +81,40 @@ exports.passwordUpdate = function(req, res) {
 
 };
 
+/*Use $addToSet to add new friend*/
+exports.addFriend = function(req, res) {
+	var id = req.body.id; 
+	User.findByIdAndUpdate( // Add him / her as my friend
+			req.session.user._id 
+			,{$addToSet: {friends: id}} 
+			,function(err, me) {
+				if(err) res.send('Add falied');
+				else {
+					User.findByIdAndUpdate( // Add me as her / his friend
+							id
+							,{$addToSet: {friends: req.session.user._id}} 
+							,function(err, friend) {
+								if(err) res.send('Add falied');
+								else {
+									req.session.user = me;
+									res.send('OK');
+								}
+							});
+				}
+			});
+
+};
+
+/*$pull to delete a friend*/
+exports.removeFriend = function(req, res) {
+	var user = req.session.user;
+	var friendId = req.body.id;
+	User.findByIdAndUpdate(user._id, {$pull: {friends: friendId}}, function(err, me) {
+		if(err) res.send('Remove failed');
+		else {
+			req.session.user = me;
+			res.send('OK');
+		}
+	});
+};
 exports.md5 = md5;

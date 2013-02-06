@@ -61,6 +61,12 @@ app.post('/passwordUpdate', user.passwordUpdate);
 
 app.get('/friendSeeking', routes.friendSeeking);
 
+app.post('/addFriend', user.addFriend);
+
+app.get('/friendsList', routes.friendsList);
+
+app.post('/removeFriend', user.removeFriend);
+
 /*Query: MongoDB中的限制操作都可以用函数表示~！！！
  * C.find({}).where('age').gt(18)
  * 		   .where('gender').equals('male')
